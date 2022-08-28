@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.http import FileResponse
+from PIL import Image, ImageDraw, ImageFont
+from django.http import HttpResponse
+
 
 from .utils import textOnImg
 
@@ -20,6 +24,10 @@ def upload_Image(request):
     if image == None:
          return Response(status=400)
     sticker = textOnImg(text="hello Pushhy", image=image)
-    response = Response(sticker.getvalue(), content_type='image/webp')
-    response['Content-Disposition'] = 'attachment; filename="output.webp"'
+    # return FileResponse(sticker, content_type="test/png")
+ 
+
+    response = HttpResponse(content_type='image/png')
+    sticker.save(response, "PNG")
+    response['Content-Disposition'] = 'attachment; filename="piece.png"'
     return response
